@@ -52,13 +52,46 @@ class Publications extends Component {
 
   };
 
+  setPublications = () => {
+    const { 
+      UsuariosReducer,
+      UsuariosReducer: { usuarios },
+      PublicationsReducer,
+      PublicationsReducer: { publications },
+      match: {
+        params: { key }
+      }
+      
+    } = this.props
+
+    if(!usuarios.lenght) return;
+    if(UsuariosReducer.error) return;
+    if(PublicationsReducer.error) {return <Fatal message={PublicationsReducer.error}/>;}
+    if(PublicationsReducer.loading) {return <Spinner/>}
+    if(!publications.lenght) return;
+    if (!("posts_key" in  UsuariosReducer.usuarios[key] )) return;
+
+
+    const { posts_key } = usuarios[key];
+
+    console.log(publications);
+
+    return publications[posts_key].map((post) => (
+      <div>
+        <h2>{post.title}</h2>
+      </div>
+     ))
+
+
+  }
+
   render() {
-    console.log(this.props);
+    //console.log(this.props);
     return (
       <div className="container">
-        
         {this.props.match.params.key}
         {this.ponerUsuario()}
+        {this.setPublications()}
       </div>
     );
   }

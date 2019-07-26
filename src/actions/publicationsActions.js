@@ -10,29 +10,41 @@ export const getByUser = (key) => async (dispatch, getState) => {
   const { publications } = getState().PublicationsReducer;
   const userId = (usuarios[key]) ? usuarios[key].id : 0 ;
 
-  const resp = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`);
+  try {
+    const resp = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`);
 
-  console.log(key, resp);
+    dispatch({
+      type: LOAD_USERS,
+    });
 
-  const updated_post = [
-    ...publications,
-    resp.data
-  ]
+    
 
-  const posts_key = updated_post.length - 1;
-  const updated_users = [...usuarios];
-  updated_users[key] = {
-    ...usuarios[key],
-    posts_key
-  };
+    const updated_post = [
+      ...publications,
+      resp.data
+    ]
 
-  dispatch({
-    type: USERS_GET_ALL,
-    payload: updated_users
-  });
-  
-  dispatch({
-    type: GET_BY_USER,
-    payload: updated_post
-  });
+    const posts_key = updated_post.length - 1;
+    const updated_users = [...usuarios];
+    updated_users[key] = {
+      ...usuarios[key],
+      posts_key
+    };
+
+    dispatch({
+      type: USERS_GET_ALL,
+      payload: updated_users
+    });
+    
+    dispatch({
+      type: GET_BY_USER,
+      payload: updated_post
+    });
+  }catch(error) {
+    console.log(error.message);
+    dispatch({
+      type: ERROR,
+      payload: 'No Avalibale Publications'
+    });
+  }
 };

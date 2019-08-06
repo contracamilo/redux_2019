@@ -32,7 +32,6 @@ class Usuarios extends Component {
         <div className="container">
         <h1>Usuarios</h1>
           {this.putContent()}
-          <Button color="danger">Danger!</Button>
         </div>
       </React.Fragment>
     );

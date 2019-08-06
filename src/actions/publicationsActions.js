@@ -5,46 +5,47 @@ import * as usrTypes from "../types/usrTypes"
 
 const { GET_USERS: USERS_GET_ALL } = usrTypes;
 
-export const getByUser = (key) => async (dispatch, getState) => {
-  const { usuarios } = getState().UsuariosReducer;
-  const { publications } = getState().PublicationsReducer;
-  const userId = (usuarios[key]) ? usuarios[key].id : 0 ;
-
-  try {
-    const resp = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`);
+export const getByUser = (key) => async(dispatch, getState) => {
 
     dispatch({
-      type: LOAD_USERS,
+        type: LOAD_USERS,
     });
 
-    
+    const { usuarios } = getState().UsuariosReducer;
+    const { publications } = getState().PublicationsReducer;
+    const userId = (usuarios[key]) ? usuarios[key].id : 0;
 
-    const updated_post = [
-      ...publications,
-      resp.data
-    ]
+    try {
+        const resp = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`);
 
-    const posts_key = updated_post.length - 1;
-    const updated_users = [...usuarios];
-    updated_users[key] = {
-      ...usuarios[key],
-      posts_key
-    };
+        const updated_post = [
+            ...publications,
+            resp.data
+        ]
 
-    dispatch({
-      type: USERS_GET_ALL,
-      payload: updated_users
-    });
-    
-    dispatch({
-      type: GET_BY_USER,
-      payload: updated_post
-    });
-  }catch(error) {
-    console.log(error.message);
-    dispatch({
-      type: ERROR,
-      payload: 'No Avalibale Publications'
-    });
-  }
+        dispatch({
+            type: GET_BY_USER,
+            payload: updated_post
+        });
+
+        const posts_key = updated_post.length - 1;
+        const updated_users = [...usuarios];
+        updated_users[key] = {
+            ...usuarios[key],
+            posts_key
+        };
+
+        dispatch({
+            type: USERS_GET_ALL,
+            payload: updated_users
+        });
+
+
+    } catch (error) {
+        console.log(error.message);
+        dispatch({
+            type: ERROR,
+            payload: 'No Avalibale Publications'
+        });
+    }
 };

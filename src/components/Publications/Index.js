@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getAll } from "../../actions/userActions";
+import { Card, CardText, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
 import { getByUser } from "../../actions/publicationsActions";
 import Spinner from "../common/Spinner";
 import Fatal from "../common/Fatal";
+import '../../css/cards.css'
 
 class Publications extends Component {
   async componentDidMount() {
@@ -23,12 +25,16 @@ class Publications extends Component {
     if(this.props.UsuariosReducer.error) {
       return
     }
-    if (!("posts_key" in  UsuariosReducer.usuarios[key] )) {
-       getByUser(key);
-    }
+    
+      if (!("posts_key" in  UsuariosReducer.usuarios[key] )) {
+        getByUser(key);
+      }
+    
   }
 
   ponerUsuario = () => {
+
+    
     const {
       UsuariosReducer,
       match: {
@@ -36,7 +42,11 @@ class Publications extends Component {
       }
     } = this.props;
 
-    if( UsuariosReducer.error) {
+   
+
+    const nombre = UsuariosReducer.usuarios[key].name;
+    
+    if ( UsuariosReducer.error) {
       return <Fatal message={UsuariosReducer.error}/>;
     }
 
@@ -44,10 +54,10 @@ class Publications extends Component {
       return <Spinner />;
     }
 
-    const nombre = UsuariosReducer.usuarios[key].name;
-    
     return (
-      <h2>Publicaciones de: {nombre}</h2>
+      <>
+        <h2>Publicaciones de: {nombre}</h2>
+      </>
     )
 
   };
@@ -64,35 +74,40 @@ class Publications extends Component {
       
     } = this.props
 
-    if(!usuarios.lenght) return;
-    if(UsuariosReducer.error) return;
+
+    //if(!usuarios.lenght) return;
+    //if(UsuariosReducer.error) return;
     if(PublicationsReducer.error) {return <Fatal message={PublicationsReducer.error}/>;}
     if(PublicationsReducer.loading) {return <Spinner/>}
-    if(!publications.lenght) return;
+    //if(!publications.lenght) return;
     if (!("posts_key" in  UsuariosReducer.usuarios[key] )) return;
-
 
     const { posts_key } = usuarios[key];
 
     console.log(publications);
 
     return publications[posts_key].map((post) => (
-      <div>
-        <h2>{post.title}</h2>
-      </div>
-     ))
-
-
+      <Col xs="12" sm="4" className="card-u">
+        <Card onClick={()=> alert(post.id) }>
+          <CardBody>
+            <CardTitle><h4>{post.title}</h4></CardTitle>
+            <CardText>{post.body}</CardText>
+          </CardBody>
+        </Card>
+      </Col>
+    ))
   }
 
   render() {
-    //console.log(this.props);
+    console.log(this.props);
     return (
-      <div className="container">
+      <Container>
         {this.props.match.params.key}
         {this.ponerUsuario()}
-        {this.setPublications()}
-      </div>
+        <Row>
+          {this.setPublications()}
+        </Row>
+      </Container>
     );
   }
 }

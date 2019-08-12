@@ -18,9 +18,15 @@ export const getByUser = (key) => async(dispatch, getState) => {
     try {
         const resp = await axios.get(`https://jsonplaceholder.typicode.com/posts?userId=${userId}`);
 
+        const nuevas = resp.data.map(publication => ({
+            ...publication,
+            comentarios: [],
+            abierto: false
+        }));
+
         const updated_post = [
             ...publications,
-            resp.data
+            nuevas
         ]
 
         dispatch({
@@ -45,7 +51,13 @@ export const getByUser = (key) => async(dispatch, getState) => {
         console.log(error.message);
         dispatch({
             type: ERROR,
-            payload: 'No Avalibale Publications'
+            payload: `No Available Publications ${error.message}`
         });
     }
 };
+
+
+
+export const openClose = (pub_key, comm) => (dispatch) => {
+    alert(`Publicacion: ${pub_key} Comentario: ${comm}`)
+}

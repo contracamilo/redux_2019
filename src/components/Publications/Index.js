@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { getAll } from "../../actions/userActions";
 import { Card, CardText, CardBody, CardTitle, Container, Row, Col } from 'reactstrap';
-import { getByUser } from "../../actions/publicationsActions";
+import { getByUser, openClose } from "../../actions/publicationsActions";
 import Spinner from "../common/Spinner";
 import Fatal from "../common/Fatal";
 import '../../css/cards.css'
@@ -84,11 +84,14 @@ class Publications extends Component {
 
     const { posts_key } = usuarios[key];
 
-    console.log(publications);
+    
+    return this.showInfo(publications[posts_key], posts_key)
+  }
 
-    return publications[posts_key].map((post) => (
-      <Col xs="12" sm="4" className="card-u">
-        <Card onClick={()=> alert(post.id) }>
+  showInfo = (publications, pub_key) => (
+    publications.map((post, comm) => (
+      <Col key={post.id} xs="12" sm="4" className="card-u">
+        <Card  onClick={() => this.props.openClose(pub_key, comm) }>
           <CardBody>
             <CardTitle><h4>{post.title}</h4></CardTitle>
             <CardText>{post.body}</CardText>
@@ -96,7 +99,7 @@ class Publications extends Component {
         </Card>
       </Col>
     ))
-  }
+  );
 
   render() {
     console.log(this.props);
@@ -120,7 +123,8 @@ const mapStateToProps = ({ UsuariosReducer, PublicationsReducer }) => {
 
 const mapDispatchToProps = {
   getAll,
-  getByUser
+  getByUser,
+  openClose
 };
 
 export default connect(

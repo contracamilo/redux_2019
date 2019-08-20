@@ -8,126 +8,19 @@ import Fatal from "../common/Fatal";
 import '../../css/cards.css'
 
 class Publications extends Component {
-  async componentDidMount() {
-    const {
-      UsuariosReducer,
-      getAll,
-      getByUser,
-      match: {
-        params: { key }
-      }
-    } = this.props;
-
-    
-    if(!UsuariosReducer.usuarios.lenght) {
-      await getAll();
-    }
-    if(this.props.UsuariosReducer.error) {
-      return
-    }
-    
-      if (!("posts_key" in  UsuariosReducer.usuarios[key] )) {
-        getByUser(key);
-      }
-    
-  }
-
-  ponerUsuario = () => {
-
-    
-    const {
-      UsuariosReducer,
-      match: {
-        params: { key }
-      }
-    } = this.props;
-
-   
-
-    const nombre = UsuariosReducer.usuarios[key].name;
-    
-    if ( UsuariosReducer.error) {
-      return <Fatal message={UsuariosReducer.error}/>;
-    }
-
-    if (!UsuariosReducer.usuarios.lenght && UsuariosReducer.loading) {
-      return <Spinner />;
-    }
-
-    return (
-      <>
-        <h2>Publicaciones de: {nombre}</h2>
-      </>
-    )
-
-  };
-
-  setPublications = () => {
-    const { 
-      UsuariosReducer,
-      UsuariosReducer: { usuarios },
-      PublicationsReducer,
-      PublicationsReducer: { publications },
-      match: {
-        params: { key }
-      }
-      
-    } = this.props
-
-
-    //if(!usuarios.lenght) return;
-    //if(UsuariosReducer.error) return;
-    if(PublicationsReducer.error) {return <Fatal message={PublicationsReducer.error}/>;}
-    if(PublicationsReducer.loading) {return <Spinner/>}
-    //if(!publications.lenght) return;
-    if (!("posts_key" in  UsuariosReducer.usuarios[key] )) return;
-
-    const { posts_key } = usuarios[key];
-
-    
-    return this.showInfo(publications[posts_key], posts_key)
-  }
-
-  showInfo = (publications, pub_key) => (
-    publications.map((post, comm) => (
-      <Col key={post.id} xs="12" sm="4" className="card-u">
-        <Card  onClick={() => this.props.openClose(pub_key, comm) }>
-          <CardBody>
-            <CardTitle><h4>{post.title}</h4></CardTitle>
-            <CardText>{post.body}</CardText>
-          </CardBody>
-        </Card>
-      </Col>
-    ))
-  );
 
   render() {
-    console.log(this.props);
+    
     return (
       <Container>
-        {this.props.match.params.key}
-        {this.ponerUsuario()}
+        
         <Row>
-          {this.setPublications()}
+         
         </Row>
       </Container>
     );
   }
 }
-const mapStateToProps = ({ UsuariosReducer, PublicationsReducer }) => {
-  return {
-    UsuariosReducer,
-    PublicationsReducer
-  };
-};
 
-const mapDispatchToProps = {
-  getAll,
-  getByUser,
-  openClose
-};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Publications);
+export default Publications;
